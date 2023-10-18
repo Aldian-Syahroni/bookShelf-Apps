@@ -21,12 +21,12 @@ function generateId() {
   return +new Date();
 }
 
-function generateBookObject(id, title, author, years, isCompleted) {
+function generateBookObject(id, title, author, year, isCompleted) {
   return {
     id,
     title,
     author,
-    years,
+    year,
     isCompleted,
   };
 }
@@ -35,7 +35,10 @@ function generateBookObject(id, title, author, years, isCompleted) {
 function addBook() {
   const bookTodo = document.getElementById("inputBookTitle").value;
   const authors = document.getElementById("inputBookAuthor").value;
-  const bookYears = document.getElementById("inputBookYear").value;
+  const bookYears = parseInt(
+    document.getElementById("inputBookYear").value,
+    10
+  );
   const completedStatus = document.querySelector("#inputBookIsComplete");
 
   const generateID = generateId();
@@ -94,7 +97,7 @@ function makeBook(bookObject) {
   bookAuthor.innerText = `Penulis: ${bookObject.author}`;
 
   const bookYear = document.createElement("p");
-  bookYear.innerText = `Tahun: ${bookObject.years}`;
+  bookYear.innerText = `Tahun: ${bookObject.year}`;
 
   const btnContainer = document.createElement("div");
   btnContainer.classList.add("action");
@@ -198,7 +201,15 @@ function findBookIndex(bookId) {
 // Menyimpan data ke web local storage
 function saveData() {
   if (isStorageExist()) {
-    const parsed = JSON.stringify(books);
+    const booksToSave = books.map((book) => ({
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      year: book.year,
+      isComplete: book.isCompleted,
+    }));
+
+    const parsed = JSON.stringify(booksToSave);
     localStorage.setItem(STORAGE_KEY, parsed);
     document.dispatchEvent(new Event(SAVED_EVENT));
   }
@@ -212,6 +223,16 @@ function loadDataBookStorage() {
   if (data !== null) {
     for (const book of data) {
       books.push(book);
+
+      bookData = data.map((book) =>
+        generateBookObject(
+          book.id,
+          book.title,
+          book.author,
+          book.years,
+          book.isCompleted
+        )
+      );
     }
   }
 
