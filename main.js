@@ -1,3 +1,4 @@
+// deklarasi untuk membuat data baru ke dalam local storage
 const books = [];
 const RENDER_EVENT = "render-book";
 const SAVED_EVENT = "seved-book";
@@ -30,6 +31,7 @@ function generateBookObject(id, title, author, years, isCompleted) {
   };
 }
 
+// membuat data object yang akan disimpan di web local storage
 function addBook() {
   const bookTodo = document.getElementById("inputBookTitle").value;
   const authors = document.getElementById("inputBookAuthor").value;
@@ -51,6 +53,7 @@ function addBook() {
   saveData();
 }
 
+// fungsi submit buku ke dalam web local storage
 document.addEventListener("DOMContentLoaded", function () {
   const submitBook = document.getElementById("inputBook");
   submitBook.addEventListener("submit", function (event) {
@@ -82,6 +85,7 @@ document.addEventListener(RENDER_EVENT, function () {
   }
 });
 
+// membuat daftar buku dan item-item nya
 function makeBook(bookObject) {
   const bookTitle = document.createElement("h3");
   bookTitle.innerText = bookObject.title;
@@ -141,6 +145,7 @@ function makeBook(bookObject) {
   return container;
 }
 
+// menambahkan buku yang akan di input
 function addBookToCompleted(bookId) {
   const bookTarget = findBook(bookId);
 
@@ -160,6 +165,7 @@ function findBook(bookId) {
   return null;
 }
 
+// menghapus data buku
 function removeBookFormCompleted(bookId) {
   const bookTarget = findBookIndex(bookId);
 
@@ -169,6 +175,7 @@ function removeBookFormCompleted(bookId) {
   saveData();
 }
 
+// memindahkan data buku dari selesai baca ke belum selesai
 function undoBookFormCompleted(bookId) {
   const bookTarget = findBook(bookId);
 
@@ -188,6 +195,7 @@ function findBookIndex(bookId) {
   return -1;
 }
 
+// Menyimpan data ke web local storage
 function saveData() {
   if (isStorageExist()) {
     const parsed = JSON.stringify(books);
@@ -196,6 +204,7 @@ function saveData() {
   }
 }
 
+// Load data buku yang ada di Web local Storage
 function loadDataBookStorage() {
   const serialData = localStorage.getItem(STORAGE_KEY);
   let data = JSON.parse(serialData);
@@ -209,6 +218,7 @@ function loadDataBookStorage() {
   document.dispatchEvent(new Event(RENDER_EVENT));
 }
 
+// Button untuk mencari judul buku
 function searchBooksByTitle() {
   const searchTitle = document
     .getElementById("searchBookTitle")
@@ -217,7 +227,6 @@ function searchBooksByTitle() {
     book.title.toLowerCase().includes(searchTitle)
   );
 
-  // Clear the bookshelf lists
   const uncompletedBookshelfList = document.getElementById(
     "incompleteBookshelfList"
   );
@@ -227,7 +236,6 @@ function searchBooksByTitle() {
   uncompletedBookshelfList.innerHTML = "";
   completedBookshelfList.innerHTML = "";
 
-  // Render the search results
   for (const book of searchResults) {
     const bookElement = makeBook(book);
     if (book.isCompleted) {
@@ -238,7 +246,6 @@ function searchBooksByTitle() {
   }
 }
 
-// Add an event listener to the search form
 const searchForm = document.getElementById("searchBook");
 searchForm.addEventListener("submit", function (event) {
   event.preventDefault();
