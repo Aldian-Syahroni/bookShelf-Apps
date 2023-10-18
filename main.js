@@ -208,3 +208,39 @@ function loadDataBookStorage() {
 
   document.dispatchEvent(new Event(RENDER_EVENT));
 }
+
+function searchBooksByTitle() {
+  const searchTitle = document
+    .getElementById("searchBookTitle")
+    .value.toLowerCase();
+  const searchResults = books.filter((book) =>
+    book.title.toLowerCase().includes(searchTitle)
+  );
+
+  // Clear the bookshelf lists
+  const uncompletedBookshelfList = document.getElementById(
+    "incompleteBookshelfList"
+  );
+  const completedBookshelfList = document.getElementById(
+    "completeBookshelfList"
+  );
+  uncompletedBookshelfList.innerHTML = "";
+  completedBookshelfList.innerHTML = "";
+
+  // Render the search results
+  for (const book of searchResults) {
+    const bookElement = makeBook(book);
+    if (book.isCompleted) {
+      completedBookshelfList.appendChild(bookElement);
+    } else {
+      uncompletedBookshelfList.appendChild(bookElement);
+    }
+  }
+}
+
+// Add an event listener to the search form
+const searchForm = document.getElementById("searchBook");
+searchForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+  searchBooksByTitle();
+});
